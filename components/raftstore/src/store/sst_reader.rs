@@ -11,8 +11,14 @@ use encryption::{self, DataKeyManager};
 use file_system::File;
 use crate::store::snap::snap_io::get_decrypter_reader;
 use tikv_util::codec::bytes::CompactBytesFromFileDecoder;
+use itertools::Itertools;
 
 pub type RawVoidPtr = *mut ::std::os::raw::c_void;
+
+pub fn u8_2_str(a: &str) -> String {
+    a.as_bytes().iter().join(" ")
+}
+
 
 pub fn name_to_cf(cf: &str) -> ColumnFamilyType {
     if cf.is_empty() {

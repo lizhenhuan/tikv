@@ -81,6 +81,7 @@ use crate::{bytes_capacity, Error, Result};
 
 use super::metrics::*;
 use crate::store::raw_api_sender::RAW_CLIENT;
+use crate::store::sst_reader::u8_2_str;
 
 const DEFAULT_APPLY_WB_SIZE: usize = 4 * 1024;
 const APPLY_WB_SHRINK_SIZE: usize = 1024 * 1024;
@@ -1504,10 +1505,12 @@ where
 
         println!("!!!!! ==> id {} region {:?} apply_state {:?}", self.id, self.region, self.apply_state);
         unsafe{
-            println!("!!!!! put k {:?} v {:?} ss {:?}", req.get_put().get_key(), req.get_put().get_value(), &std::str::from_utf8_unchecked(req.get_put().get_key()));
-             info!("!!!!! put k";
-                    "key" => &std::str::from_utf8_unchecked(req.get_put().get_key()), "value" => &std::str::from_utf8_unchecked(req.get_put().get_value()));
-             RAW_CLIENT.put(std::str::from_utf8_unchecked(req.get_put().get_key()), std::str::from_utf8_unchecked(req.get_put().get_value()));
+            let kx = std::str::from_utf8_unchecked(&req.get_put().get_key());
+            let vx = std::str::from_utf8_unchecked(&req.get_put().get_value());
+            println!("!!!!! put k {:?} v {:?} ss {:?}", req.get_put().get_key(), req.get_put().get_value(), &u8_2_str(&kx));
+            info!("!!!!! put k";
+                    "key" => &u8_2_str(&kx), "value" => &u8_2_str(&vx));
+            RAW_CLIENT.put(kx, vx);
         }
         let (key, value) = (req.get_put().get_key(), req.get_put().get_value());
         // region key range has no data prefix, so we must use origin key to check.

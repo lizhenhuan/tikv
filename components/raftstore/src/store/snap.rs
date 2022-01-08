@@ -47,6 +47,8 @@ use crate::{Error as RaftStoreError, Result as RaftStoreResult};
 use crate::store::sst_reader;
 use crate::store::raw_api_sender::RAW_CLIENT;
 
+use crate::store::sst_reader::u8_2_str;
+
 #[path = "snap/io.rs"]
 pub mod snap_io;
 
@@ -826,10 +828,12 @@ impl Snapshot {
                 let cf_index = t;
 
                 println!("!!!!! Snapshot key {:?} v {:?}", key, value);
+                let kx = std::str::from_utf8_unchecked(&key);
+                let vx = std::str::from_utf8_unchecked(&value);
                 info!("!!!!! Snapshot key";
-                    "key" => &std::str::from_utf8_unchecked(&key),
-                    "key" => &std::str::from_utf8_unchecked(&value));
-                RAW_CLIENT.put(std::str::from_utf8_unchecked(&key), std::str::from_utf8_unchecked(&value));
+                    "key" => u8_2_str(&kx),
+                    "val" => u8_2_str(&vx));
+                RAW_CLIENT.put(kx, vx);
 
                 sst_reader::ffi_next(sst_reader_ptr.clone(), t);
             }
