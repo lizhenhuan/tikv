@@ -45,6 +45,7 @@ use crate::store::peer_storage::JOB_STATUS_CANCELLING;
 use crate::{Error as RaftStoreError, Result as RaftStoreResult};
 
 use crate::store::sst_reader;
+use crate::store::raw_api_sender::RAW_CLIENT;
 
 #[path = "snap/io.rs"]
 pub mod snap_io;
@@ -825,6 +826,7 @@ impl Snapshot {
                 let cf_index = t;
 
                 println!("!!!!! Snapshot key {:?} v {:?}", key, value);
+                RAW_CLIENT.put(std::str::from_utf8_unchecked(&key), std::str::from_utf8_unchecked(&value));
 
                 sst_reader::ffi_next(sst_reader_ptr.clone(), t);
             }

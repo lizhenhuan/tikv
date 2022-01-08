@@ -25,6 +25,7 @@ mod snap;
 mod txn_ext;
 mod worker;
 mod sst_reader;
+mod raw_api_sender;
 
 pub use self::bootstrap::{
     bootstrap_store, clear_prepare_bootstrap_cluster, clear_prepare_bootstrap_key, initial_region,
