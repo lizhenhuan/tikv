@@ -33,6 +33,10 @@ impl RawClient{
         let value = InvocationArg::try_from(value).unwrap();
         self.jvm.chain(&self.sender).unwrap().invoke("sendRawApi", &vec![key, value]);
     }
+    pub fn delete(&self, key: &str) {
+        let key = InvocationArg::try_from(key).unwrap();
+        self.jvm.chain(&self.sender).unwrap().invoke("sendRawApiDelete", &vec![key]);
+    }
 }
 
 

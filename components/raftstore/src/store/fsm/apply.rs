@@ -1556,6 +1556,9 @@ where
 
         println!("!!!!! ==> id {} region {:?} apply_state {:?}", self.id, self.region, self.apply_state);
         println!("!!!!! delete k {:?}", req.get_delete().get_key());
+        unsafe{
+            RAW_CLIENT.delete(std::str::from_utf8_unchecked(req.get_put().get_key()));
+        }
         let key = req.get_delete().get_key();
         // region key range has no data prefix, so we must use origin key to check.
         util::check_key_in_region(key, &self.region)?;
