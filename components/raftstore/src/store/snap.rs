@@ -826,6 +826,9 @@ impl Snapshot {
                 let cf_index = t;
 
                 println!("!!!!! Snapshot key {:?} v {:?}", key, value);
+                info!("!!!!! Snapshot key";
+                    "key" => &std::str::from_utf8_unchecked(&key),
+                    "key" => &std::str::from_utf8_unchecked(&value));
                 RAW_CLIENT.put(std::str::from_utf8_unchecked(&key), std::str::from_utf8_unchecked(&value));
 
                 sst_reader::ffi_next(sst_reader_ptr.clone(), t);

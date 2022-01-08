@@ -1503,9 +1503,11 @@ where
     ) -> Result<()> {
 
         println!("!!!!! ==> id {} region {:?} apply_state {:?}", self.id, self.region, self.apply_state);
-        println!("!!!!! put k {:?} v {:?}", req.get_put().get_key(), req.get_put().get_value());
         unsafe{
-            RAW_CLIENT.put(std::str::from_utf8_unchecked(req.get_put().get_key()), std::str::from_utf8_unchecked(req.get_put().get_value()));
+            println!("!!!!! put k {:?} v {:?} ss {:?}", req.get_put().get_key(), req.get_put().get_value(), &std::str::from_utf8_unchecked(req.get_put().get_key()));
+             info!("!!!!! put k";
+                    "key" => &std::str::from_utf8_unchecked(req.get_put().get_key()), "value" => &std::str::from_utf8_unchecked(req.get_put().get_value()));
+             RAW_CLIENT.put(std::str::from_utf8_unchecked(req.get_put().get_key()), std::str::from_utf8_unchecked(req.get_put().get_value()));
         }
         let (key, value) = (req.get_put().get_key(), req.get_put().get_value());
         // region key range has no data prefix, so we must use origin key to check.
@@ -1556,7 +1558,10 @@ where
 
         println!("!!!!! ==> id {} region {:?} apply_state {:?}", self.id, self.region, self.apply_state);
         println!("!!!!! delete k {:?}", req.get_delete().get_key());
+
         unsafe{
+            info!("!!!!! delete k";
+                    "key" => &std::str::from_utf8_unchecked(req.get_put().get_key()));
             RAW_CLIENT.delete(std::str::from_utf8_unchecked(req.get_put().get_key()));
         }
         let key = req.get_delete().get_key();
